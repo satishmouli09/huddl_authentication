@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HUDDL AI</title>
+    <style>
+        body {
+            font-family: arial;
+            margin: 0;
+        }
+        nav {
+            background: #7b47ef;
+            padding: 20px 10px;
+        }
+
+        nav ul {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        nav li {
+            list-style-type: none;
+            display: inline-block;
+            margin: 0 10px 0 0;
+        }
+
+        nav a {
+            color: #fff;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+
+        .right-align {
+            float: right;
+        }
+
+        .extra-padding {
+            margin-left: 50px;
+        }
+
+        main, header {
+            max-width: 960px;
+            margin: 30px auto;
+            padding: 0 10px;
+            color: #333;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        /*tr:nth-child(even) {*/
+        /*    background-color: #dddddd;*/
+        /*}*/
+
+        .enabled {
+            background-color: #4CAF50;
+            border: 1px solid green;
+            color: white; /* White text */
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            float: left; /* Float the buttons side by side */
+            width: 40%;
+            height: 100%;
+        }
+
+        .disabled {
+            background-color: red;
+            border: 1px solid red;
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            float: left; /* Float the buttons side by side */
+            width: 40%;
+            height: 100%;
+        }
+
+        span {
+            padding: 10px 24px; /* Some padding */
+            cursor: pointer; /* Pointer/hand icon */
+            float: left; /* Float the buttons side by side */
+            width: 50%;
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="/">HUDDL.AI</a></li>
+        <%if (loggedIn) {%>
+            <li class="extra-padding"><a href="/auth/logout">Users</a></li>
+            <li class="right-align"><a href="/auth/logout">Logout</a></li>
+        <%} else {%>
+            <li><a href="/auth/login">Login</a></li>
+        <%}%>
+    </ul>
+</nav>
+<div>
+    <table>
+        <tr>
+            <th>S.No.</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Whitelist Status</th>
+            <th>Actions</th>
+        </tr>
+        <% for(let i = 0; i < users.length; i++) {%>
+            <% var user = users[i]%>
+            <tr>
+                <td><%= i+1 %></td>
+                <td><%= user.username || "-"%></td>
+                <td><%= user.email || "-"%></td>
+                <td><%= user.whitelisted ? "Yes" : "No" %></td>
+                <td>
+                    <% if (user.email === excludeUserEmail) {%>
+                        <span>No Actions Available.</span>
+                    <%} else {%>
+                        <% if (user.whitelisted) {%>
+                            <button type="button" class="disabled" value="<%=user._id%>" onclick="{handleWhitelist(this.value, 'blacklist')}">Blacklist</button>
+                        <% } else {%>
+                            <button type="button" class="enabled" value="<%=user._id%>" onclick="{handleWhitelist(this.value, 'whitelist')}">Whitelist</button>
+                        <% } %>
+                    <% } %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>
+</body>
+</html>
+
+<script type="text/javascript">
+    function handleWhitelist(id, type) {
+      window.location.href = `/whitelist?id=${id}&type=${type}`;
+    }
+</script>
